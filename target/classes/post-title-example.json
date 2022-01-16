@@ -1,0 +1,12 @@
+{
+    "path": "pathTest",
+    "titleDetailsForm": {
+      "name": "NameTest",
+      "score" : "ScoreTest",
+      "synopsis": "SynopsisTest",
+      "imageCoverUrl": "ImageCoverUrlTest",
+      "imageThumbnailUrl": "ImageThumbnailUrlTest",
+      "releaseDate": "ReleaseDateTest",
+      "finishDate": "FinishDateTest"
+    }
+}
