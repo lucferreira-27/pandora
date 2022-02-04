@@ -10,6 +10,7 @@ import com.panadora.pandora.service.TitleImageLoader;
 import com.panadora.pandora.service.exceptions.TitleNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.InputStream;
 import java.util.List;
@@ -18,42 +19,43 @@ import java.util.Optional;
 @Service
 public class TitleManagerImpl implements TitleManager {
 
-    @Autowired
     private final TitleRepository titleRepository;
-    @Autowired
     private final TitleImageLoader titleImageLoader;
-    @Autowired
-    private final TitleImageDownloader titleImageDownloader;
+    private final TitleManagerUtil titleManagerUtil;
 
-    public TitleManagerImpl(TitleRepository titleRepository, TitleImageLoader titleImageLoader, TitleImageDownloader titleImageDownloader) {
+    public TitleManagerImpl(TitleRepository titleRepository,
+                            TitleImageLoader titleImageLoader,
+                            TitleManagerUtil titleManagerUtil) {
         this.titleRepository = titleRepository;
         this.titleImageLoader = titleImageLoader;
-        this.titleImageDownloader = titleImageDownloader;
+        this.titleManagerUtil = titleManagerUtil;
     }
 
 
     @Override
     public List<TitleDto> listTitles() {
-        List<Title> titles = TitleManagerUtil.getListOfTitles(titleRepository);
-        List<TitleDto> chapterDto = TitleManagerUtil.fromTitleToTitleDto(titles,new TitleDto());
+        List<Title> titles = titleManagerUtil.getListOfTitles(titleRepository);
+        List<TitleDto> chapterDto = titleManagerUtil.fromTitleToTitleDto(titles,new TitleDto());
         return chapterDto;
     }
 
     @Override
     public TitleItemsDto getTitle(String id) {
 
-        Title title = TitleManagerUtil.getTitleIfExist(Long.valueOf(id), titleRepository);
-        return (TitleItemsDto) new TitleItemsDto().toDto(title);
+        Title title = titleManagerUtil.getTitleIfExist(Long.valueOf(id), titleRepository);
+        return (TitleItemsDto) TitleDto.toDto(title);
     }
 
     @Override
     public void deleteTitle(String id) {
-        Title title = TitleManagerUtil.getTitleIfExist(Long.valueOf(id), titleRepository);
+        Title title = titleManagerUtil.getTitleIfExist(Long.valueOf(id), titleRepository);
         titleRepository.delete(title);
     }
 
     @Override
-    public TitleDto addTitle(TitleForm titleForm) {return null;}
+    public TitleDto addTitle(TitleForm titleForm) {
+        throw new NotImplementedException();
+    }
 
     @Override
     public InputStream getTitleImage(String image, String id) {
@@ -61,7 +63,7 @@ public class TitleManagerImpl implements TitleManager {
         if (optional.isPresent()) {
             Title title = optional.get();
             TitleDetails titleDetails = title.getTitleDetails();
-            titleImageLoader.load(image, titleDetails);
+            return titleImageLoader.load(image, titleDetails);
         }
         throw new TitleNotFoundException();
     }

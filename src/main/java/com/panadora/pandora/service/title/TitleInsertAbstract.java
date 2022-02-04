@@ -6,6 +6,7 @@ import com.panadora.pandora.model.entities.collection.Collection;
 import com.panadora.pandora.model.entities.collection.title.Title;
 import com.panadora.pandora.repository.CollectionRepository;
 import com.panadora.pandora.repository.title.TitleRepository;
+import com.panadora.pandora.service.ImageBytes;
 import com.panadora.pandora.service.exceptions.CollectionNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,7 +23,7 @@ public abstract class  TitleInsertAbstract<T extends Collection,E extends Title>
         addTitleOnCollectionAndSave(collection,title);
 
     }
-    private T getIfCollectionExist(Long id){
+    protected final T getIfCollectionExist(Long id){
         Optional<Collection> optional = collectionRepository.findById(id);
         if (optional.isPresent()) {
             Collection collection = optional.get();
@@ -30,8 +31,8 @@ public abstract class  TitleInsertAbstract<T extends Collection,E extends Title>
         }
         throw new CollectionNotFoundException();
     }
-    protected void saveAndFlush(E collection){
-        titleRepository.saveAndFlush(collection);
+    protected  void saveAndFlush(E title){
+       titleRepository.saveAndFlush(title);
     }
     protected  abstract void addTitleOnCollectionAndSave(T collection, E title);
 }

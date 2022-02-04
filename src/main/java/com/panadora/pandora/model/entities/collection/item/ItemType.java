@@ -6,5 +6,7 @@ public enum ItemType {
     @JsonProperty("episode")
     EPISODE,
     @JsonProperty("chapter")
-    CHAPTER
+    CHAPTER,
+    @JsonProperty("special")
+    SPECIAL,
 }

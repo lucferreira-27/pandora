@@ -23,9 +23,7 @@ public class EpisodeDto extends ItemDto{
 
     }
 
-    @Override
-    public ItemDto toDto(Item item) {
-        Episode episode = (Episode) item;
+    public static EpisodeDto toDto(Episode episode) {
         EpisodeDto episodeDto = new EpisodeDto();
 
         episodeDto.setItemDetails(episode.getItemDetails());

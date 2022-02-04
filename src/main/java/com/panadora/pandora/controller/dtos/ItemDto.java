@@ -19,7 +19,7 @@ public class ItemDto {
         this.id = item.getId();
     }
 
-    public  ItemDto toDto(Item item){
+    public static ItemDto toDto(Item item){
 
         ItemDto itemDto = new ItemDto();
         itemDto.setItemDetails(item.getItemDetails());

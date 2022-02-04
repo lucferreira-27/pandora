@@ -7,7 +7,9 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Inheritance
@@ -15,7 +17,7 @@ public abstract class Title {
 
     private TitleType titleType;
     @ManyToMany
-    protected List<Collection> collections;
+    protected List<Collection> collections = new ArrayList<>();
     @OneToOne(cascade={CascadeType.REMOVE,CascadeType.PERSIST})
     protected TitleDetails titleDetails;
     @Id
@@ -66,4 +68,16 @@ public abstract class Title {
         this.collections = collections;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Title title = (Title) o;
+        return titleType == title.titleType && Objects.equals(collections, title.collections) && Objects.equals(titleDetails, title.titleDetails) && Objects.equals(id, title.id) && Objects.equals(path, title.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(titleType, collections, titleDetails, id, path);
+    }
 }

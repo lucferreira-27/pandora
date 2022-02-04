@@ -15,15 +15,33 @@ public class ItemForm {
         return  itemDetailsForm;
     }
 
+    public void setItemDetailsForm(ItemDetailsForm itemDetailsForm) {
+        this.itemDetailsForm = itemDetailsForm;
+    }
+
     public ItemType getItemType() {
         return itemType;
     }
+
+    public void setItemType(ItemType itemType) {
+        this.itemType = itemType;
+    }
+    public Long getTitleId() {
+        return titleId;
+    }
+    public void setTitleId(Long titleId) {
+        this.titleId = titleId;
+    }
+
 
     public String getPath() {
         return path;
     }
 
-    public Long getTitleId() {
-        return titleId;
+    public void setPath(String path) {
+        this.path = path;
     }
+
+
+
 }

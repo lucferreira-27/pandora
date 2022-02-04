@@ -4,14 +4,14 @@ import com.panadora.pandora.model.entities.collection.title.Anime;
 import com.panadora.pandora.model.entities.collection.title.Title;
 
 public class AnimeDto extends TitleDto{
-    AnimeDto(Anime anime){
+    public AnimeDto(Anime anime){
         super(anime);
     }
     public AnimeDto(){
 
     }
 
-    public static TitleDto toDto(Anime anime) {
+    public  static AnimeDto toDto(Anime anime) {
         AnimeDto animeDto = new AnimeDto();
         animeDto.setId(anime.getId());
         animeDto.setPath(anime.getPath());

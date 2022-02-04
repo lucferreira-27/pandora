@@ -5,14 +5,14 @@ import com.panadora.pandora.model.entities.collection.title.Manga;
 import com.panadora.pandora.model.entities.collection.title.Title;
 
 public class MangaDto extends TitleDto{
-    MangaDto(Manga manga){
+    public MangaDto(Manga manga){
         super(manga);
     }
     public MangaDto(){
 
     }
 
-    public static TitleDto toDto(Manga manga) {
+    public static MangaDto toDto(Manga manga) {
         MangaDto mangaDto = new MangaDto();
         mangaDto.setId(manga.getId());
         mangaDto.setPath(manga.getPath());

@@ -13,28 +13,29 @@ public class ChapterItemManagerImpl implements ItemManager<ChapterDto, ChapterFo
 
     private final ChapterRepository chapterRepository;
     private final ChapterItemInsertImpl chapterItemInsert;
-
-    public ChapterItemManagerImpl(ChapterRepository chapterRepository, ChapterItemInsertImpl chapterItemInsert) {
+    private final ItemManagerUtil itemManagerUtil;
+    public ChapterItemManagerImpl(ChapterRepository chapterRepository, ChapterItemInsertImpl chapterItemInsert, ItemManagerUtil itemManagerUtil) {
         this.chapterRepository = chapterRepository;
         this.chapterItemInsert = chapterItemInsert;
+        this.itemManagerUtil = itemManagerUtil;
     }
 
     @Override
     public List<ChapterDto> listItems() {
-        List<Chapter> chapters = ItemManagerUtil.getListOfItems(chapterRepository);
-        List<ChapterDto> chapterDto = ItemManagerUtil.fromItemToItemDto(chapters,new ChapterDto());
+        List<Chapter> chapters = itemManagerUtil.getListOfItems(chapterRepository);
+        List<ChapterDto> chapterDto = itemManagerUtil.fromItemToItemDto(chapters,new ChapterDto());
         return chapterDto;
     }
 
     @Override
     public ChapterDto getItem(String id) {
-        Chapter chapter = ItemManagerUtil.getItemIfExist(Long.valueOf(id), chapterRepository);
+        Chapter chapter = itemManagerUtil.getItemIfExist(Long.valueOf(id), chapterRepository);
         return (ChapterDto) new ChapterDto().toDto(chapter);
     }
 
     @Override
     public void deleteItem(String id) {
-        Chapter chapter = ItemManagerUtil.getItemIfExist(Long.valueOf(id), chapterRepository);
+        Chapter chapter = itemManagerUtil.getItemIfExist(Long.valueOf(id), chapterRepository);
         chapterRepository.delete(chapter);
     }
 
@@ -47,7 +48,7 @@ public class ChapterItemManagerImpl implements ItemManager<ChapterDto, ChapterFo
     }
 
     private Chapter createItem(Chapter newChapter, ChapterForm chapterForm){
-        Chapter chapter = ItemManagerUtil.createItem(newChapter,chapterForm);
+        Chapter chapter = itemManagerUtil.createItem(newChapter,chapterForm);
         chapter.setCustomPathCover(chapterForm.getCustomPathCover());
         return chapter;
     }

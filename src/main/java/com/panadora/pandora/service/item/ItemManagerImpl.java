@@ -6,6 +6,7 @@ import com.panadora.pandora.model.entities.collection.item.*;
 import com.panadora.pandora.repository.item.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
@@ -16,18 +17,12 @@ public class ItemManagerImpl implements ItemManager<ItemDto, ItemForm>{
     @Autowired
     private ItemRepository itemRepository;
     @Autowired
-    private final EpisodeItemInsertImpl episodeItemInsert;
-    @Autowired
-    private final ChapterItemInsertImpl chapterItemInsert;
+    private  ItemManagerUtil itemManagerUtil;
 
-    public ItemManagerImpl(EpisodeItemInsertImpl episodeItemInsert, ChapterItemInsertImpl chapterItemInsert) {
-        this.episodeItemInsert = episodeItemInsert;
-        this.chapterItemInsert = chapterItemInsert;
-    }
     @Override
     public List<ItemDto> listItems() {
-        List<Item> items = ItemManagerUtil.getListOfItems(itemRepository);
-        List<ItemDto> ItemsDto = ItemManagerUtil.fromItemToItemDto(items,new ItemDto());
+        List<Item> items = itemManagerUtil.getListOfItems(itemRepository);
+        List<ItemDto> ItemsDto = itemManagerUtil.fromItemToItemDto(items,new ItemDto());
         return ItemsDto;
 
     }
@@ -35,20 +30,20 @@ public class ItemManagerImpl implements ItemManager<ItemDto, ItemForm>{
     @Override
     public ItemDto getItem(String id) {
 
-        Item item = ItemManagerUtil.getItemIfExist(Long.valueOf(id), itemRepository);
-        return new ItemDto(item);
+        Item item = itemManagerUtil.getItemIfExist(Long.valueOf(id), itemRepository);
+        return ItemDto.toDto(item);
 
     }
 
     @Override
     public void deleteItem(String id) {
-        Item item = ItemManagerUtil.getItemIfExist(Long.valueOf(id), itemRepository);
+        Item item = itemManagerUtil.getItemIfExist(Long.valueOf(id), itemRepository);
         itemRepository.delete(item);
     }
 
     @Override
-    public ItemDto addItem(ItemForm itemForm) {
-        return  null;
+    public ItemDto addItem(ItemForm itemForm)  {
+        throw new NotImplementedException();
     }
 
 

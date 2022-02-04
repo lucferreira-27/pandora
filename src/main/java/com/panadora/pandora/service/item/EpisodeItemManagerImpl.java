@@ -13,28 +13,30 @@ public class EpisodeItemManagerImpl implements ItemManager<EpisodeDto, EpisodeFo
 
     private final EpisodeRepository episodeRepository;
     private final EpisodeItemInsertImpl episodeItemInsert;
+    private final ItemManagerUtil itemManagerUtil;
 
-    public EpisodeItemManagerImpl(EpisodeRepository episodeRepository, EpisodeItemInsertImpl episodeItemInsert) {
+    public EpisodeItemManagerImpl(EpisodeRepository episodeRepository, EpisodeItemInsertImpl episodeItemInsert, ItemManagerUtil itemManagerUtil) {
         this.episodeRepository = episodeRepository;
         this.episodeItemInsert = episodeItemInsert;
+        this.itemManagerUtil = itemManagerUtil;
     }
 
     @Override
     public List<EpisodeDto> listItems() {
-        List<Episode> episodes = ItemManagerUtil.getListOfItems(episodeRepository);
-        List<EpisodeDto> episodesDto = ItemManagerUtil.fromItemToItemDto(episodes,new EpisodeDto());
+        List<Episode> episodes = itemManagerUtil.getListOfItems(episodeRepository);
+        List<EpisodeDto> episodesDto = itemManagerUtil.fromItemToItemDto(episodes,new EpisodeDto());
         return episodesDto;
     }
 
     @Override
     public EpisodeDto getItem(String id) {
-        Episode episode = ItemManagerUtil.getItemIfExist(Long.valueOf(id), episodeRepository);
+        Episode episode = itemManagerUtil.getItemIfExist(Long.valueOf(id), episodeRepository);
         return (EpisodeDto) new EpisodeDto().toDto(episode);
     }
 
     @Override
     public void deleteItem(String id) {
-        Episode episode = ItemManagerUtil.getItemIfExist(Long.valueOf(id), episodeRepository);
+        Episode episode = itemManagerUtil.getItemIfExist(Long.valueOf(id), episodeRepository);
         episodeRepository.delete(episode);
     }
 
@@ -47,7 +49,7 @@ public class EpisodeItemManagerImpl implements ItemManager<EpisodeDto, EpisodeFo
         return  (EpisodeDto) new EpisodeDto().toDto(episode);
     }
     private Episode createItem(Episode newEpisode, EpisodeForm episodeForm){
-        Episode episode = ItemManagerUtil.createItem(newEpisode,episodeForm);
+        Episode episode = itemManagerUtil.createItem(newEpisode,episodeForm);
         episode.setDescription(episodeForm.getDescription());
         return episode;
     }

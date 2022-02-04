@@ -3,6 +3,7 @@ package com.panadora.pandora.controller.form;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class TitleDetailsForm {
     private String name;
@@ -70,5 +71,18 @@ public class TitleDetailsForm {
 
     public void setFinishedDate(Date finishedDate) {
         this.finishedDate = finishedDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TitleDetailsForm that = (TitleDetailsForm) o;
+        return Objects.equals(name, that.name) && Objects.equals(score, that.score) && Objects.equals(synopsis, that.synopsis) && Objects.equals(imageCoverUrl, that.imageCoverUrl) && Objects.equals(imageThumbnailUrl, that.imageThumbnailUrl) && Objects.equals(releaseDate, that.releaseDate) && Objects.equals(finishedDate, that.finishedDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, score, synopsis, imageCoverUrl, imageThumbnailUrl, releaseDate, finishedDate);
     }
 }

@@ -22,8 +22,8 @@ public class ChapterDto extends ItemDto{
 
     }
 
-    @Override
-    public ItemDto toDto(Item item) {
+
+    public static ChapterDto toDto(Chapter item) {
         Chapter chapter = (Chapter) item;
         ChapterDto chapterDto = new ChapterDto();
         chapterDto.setItemDetails(chapter.getItemDetails());

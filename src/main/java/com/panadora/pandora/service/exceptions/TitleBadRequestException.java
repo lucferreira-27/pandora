@@ -5,5 +5,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Bad Request")
 public class TitleBadRequestException extends BadRequestException{
+    public TitleBadRequestException(){
 
+    }
+    public TitleBadRequestException(String msg){
+        super(msg);
+    }
 }

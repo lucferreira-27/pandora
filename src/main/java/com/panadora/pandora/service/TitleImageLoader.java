@@ -14,20 +14,40 @@ import java.net.URL;
 @Service
 public class TitleImageLoader {
     public InputStream load(String image, TitleDetails titleDetails){
-        if(image.equals(ImageType.THUMBNAIL.getValue())){
-           return loadThumbnail(titleDetails);
+        if(isImageValid(image)){
+            return loadImage(image,titleDetails);
         }
-        if(image.equals(ImageType.COVER.getValue())){
-            return loadCover(titleDetails);
+        throw new IllegalArgumentException("Invalid image name");
+    }
+
+    private boolean isImageValid(String image){
+
+        if(image == null){
+            return false;
         }
-        throw new IllegalArgumentException();
+        return isImageThumbnail(image) || isImageCover(image);
+
     }
-    private InputStream loadThumbnail(TitleDetails titleDetails){
-        byte[] imageBytes = titleDetails.getImageThumbnail();
-        return new ByteArrayInputStream(imageBytes);
+
+    private boolean isImageThumbnail(String image){
+        return image.equals(ImageType.THUMBNAIL.getValue());
     }
-    private InputStream loadCover(TitleDetails titleDetails){
-        byte[] imageBytes = titleDetails.getImageCover();
+
+    private boolean isImageCover(String image){
+        return image.equals(ImageType.COVER.getValue());
+    }
+
+    private InputStream loadImage(String image, TitleDetails titleDetails){
+        if(isImageThumbnail(image)){
+            return loadImageBytes(titleDetails.getImageThumbnail());
+        }
+        else{
+            return loadImageBytes(titleDetails.getImageCover());
+        }
+
+    }
+
+    private InputStream loadImageBytes(byte [] imageBytes){
         return new ByteArrayInputStream(imageBytes);
     }
 

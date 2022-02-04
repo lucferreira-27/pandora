@@ -8,8 +8,9 @@ import com.panadora.pandora.model.entities.collection.title.TitleDetails;
 import com.panadora.pandora.repository.title.AnimeRepository;
 import com.panadora.pandora.service.TitleImageDownloader;
 import com.panadora.pandora.service.TitleImageLoader;
+import com.panadora.pandora.service.exceptions.AddImageException;
+import com.panadora.pandora.service.exceptions.TitleBadRequestException;
 import com.panadora.pandora.service.exceptions.TitleNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
@@ -17,59 +18,74 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AnimeTitleManagerImpl implements TitleManager<AnimeDto, AnimeForm>{
+public class AnimeTitleManagerImpl implements TitleManager<AnimeDto, AnimeForm> {
 
-    @Autowired
     private final AnimeRepository animeRepository;
-    @Autowired
     private final AnimeTitleInsertImpl animeTitleInsert;
-    @Autowired
     private final TitleImageLoader titleImageLoader;
-    @Autowired
     private final TitleImageDownloader titleImageDownloader;
+    private final TitleManagerUtil titleManagerUtil;
 
-    public AnimeTitleManagerImpl(AnimeRepository animeRepository, AnimeTitleInsertImpl animeTitleInsert, TitleImageLoader titleImageLoader, TitleImageDownloader titleImageDownloader) {
+    public AnimeTitleManagerImpl(AnimeRepository animeRepository,
+                                 AnimeTitleInsertImpl animeTitleInsert,
+                                 TitleImageLoader titleImageLoader,
+                                 TitleImageDownloader titleImageDownloader,
+                                 TitleManagerUtil titleManagerUtil) {
         this.animeRepository = animeRepository;
         this.animeTitleInsert = animeTitleInsert;
         this.titleImageLoader = titleImageLoader;
         this.titleImageDownloader = titleImageDownloader;
+        this.titleManagerUtil = titleManagerUtil;
     }
 
 
     @Override
     public List<AnimeDto> listTitles() {
-        List<Anime> animes = TitleManagerUtil.getListOfTitles(animeRepository);
-        List<AnimeDto> animeDto = TitleManagerUtil.fromTitleToTitleDto(animes,new AnimeDto());
+        List<Anime> animes = titleManagerUtil.getListOfTitles(animeRepository);
+        List<AnimeDto> animeDto = titleManagerUtil.fromTitleToTitleDto(animes, new AnimeDto());
         return animeDto;
     }
 
     @Override
     public AnimeDto getTitle(String id) {
-        Anime anime = TitleManagerUtil.getTitleIfExist(Long.valueOf(id), animeRepository);
-        return (AnimeDto) AnimeDto.toDto(anime);
+
+        Anime anime = titleManagerUtil.getTitleIfExist(Long.valueOf(id), animeRepository);
+        return AnimeDto.toDto(anime);
     }
 
     @Override
     public void deleteTitle(String id) {
-        Anime anime = TitleManagerUtil.getTitleIfExist(Long.valueOf(id), animeRepository);
+        Anime anime = titleManagerUtil.getTitleIfExist(Long.valueOf(id), animeRepository);
         animeRepository.delete(anime);
     }
 
     @Override
     public AnimeDto addTitle(AnimeForm titleForm) {
-        Anime newAnime = new Anime();
-        Anime anime = createTitle(newAnime,titleForm);
-        animeTitleInsert.insertTitleOnCollection(anime,titleForm);
-        return (AnimeDto) AnimeDto.toDto(anime);
+        try {
+            Anime newAnime = new Anime();
+            Anime anime = createTitle(newAnime, titleForm);
+            animeTitleInsert.insertTitleOnCollection(anime, titleForm);
+            return AnimeDto.toDto(anime);
+        } catch (AddImageException e) {
+            e.printStackTrace();
+            throw new TitleBadRequestException("Failed on load image");
+        }
+
     }
 
     @Override
     public InputStream getTitleImage(String image, String id) {
-        Anime anime = TitleManagerUtil.getTitleIfExist(Long.valueOf(id), animeRepository);
-        return  titleImageLoader.load(image, anime.getTitleDetails());
+        Optional<Anime> optional = animeRepository.findById(Long.valueOf(id));
+        if (optional.isPresent()) {
+            Anime anime = optional.get();
+            TitleDetails titleDetails = anime.getTitleDetails();
+            return titleImageLoader.load(image, titleDetails);
+        }
+        throw new TitleNotFoundException();
     }
-    private Anime createTitle(Anime newAnime, AnimeForm animeForm){
-        Anime anime = TitleManagerUtil.createTitle(newAnime,animeForm);
+
+    private Anime createTitle(Anime newAnime, AnimeForm animeForm) throws AddImageException {
+        Anime anime = titleManagerUtil.createTitleFromForm(newAnime, animeForm);
         titleImageDownloader.downloadAndAddImagesBytes(anime.getTitleDetails(), animeForm.getTitleDetailsForm());
 
         return anime;

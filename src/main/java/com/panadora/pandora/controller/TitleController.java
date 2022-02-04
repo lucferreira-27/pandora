@@ -25,9 +25,9 @@ public class TitleController {
     private TitleManagerImpl titleManager;
 
     @GetMapping("/titles")
-    public List<TitleDto> listTitles(){
+    public ResponseEntity listTitles(){
         List<TitleDto> listTitlesDtos = titleManager.listTitles();
-        return listTitlesDtos;
+        return ResponseEntity.ok().body(listTitlesDtos);
     }
 
     @GetMapping("/titles/{id}")
