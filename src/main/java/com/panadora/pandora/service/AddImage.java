@@ -3,7 +3,6 @@ package com.panadora.pandora.service;
 import com.panadora.pandora.controller.form.TitleDetailsForm;
 import com.panadora.pandora.model.entities.collection.title.TitleDetails;
 import com.panadora.pandora.service.exceptions.AddImageException;
-import com.panadora.pandora.service.exceptions.ImageBytesException;
 import com.panadora.pandora.service.exceptions.TitleBadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,7 +12,7 @@ import java.net.URL;
 public  abstract class AddImage {
 
     @Autowired
-    private ImageBytes imageBytes;
+    private URLBytes URLBytes;
 
     public void downloadAndAddImagesBytes(TitleDetails titleDetails, TitleDetailsForm titleDetailsForm) throws AddImageException {
 
@@ -42,7 +41,7 @@ public  abstract class AddImage {
 
     private byte[] getBytesFromURL(String url) {
         try {
-            byte[] imageThumbnailBytes = imageBytes.convertURLtoBytes(new URL(url));
+            byte[] imageThumbnailBytes = URLBytes.convertURLtoBytes(new URL(url));
             return imageThumbnailBytes;
         } catch (IOException  e) {
             e.printStackTrace();

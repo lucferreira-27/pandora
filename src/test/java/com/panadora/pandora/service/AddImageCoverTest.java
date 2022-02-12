@@ -3,7 +3,6 @@ package com.panadora.pandora.service;
 import com.panadora.pandora.controller.form.TitleDetailsForm;
 import com.panadora.pandora.model.entities.collection.title.TitleDetails;
 import com.panadora.pandora.service.exceptions.AddImageException;
-import com.panadora.pandora.service.exceptions.ImageBytesException;
 import com.panadora.pandora.service.exceptions.TitleBadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ import static org.mockito.Mockito.times;
 class AddImageCoverTest {
 
     @Mock
-    private ImageBytes imageBytes;
+    private URLBytes URLBytes;
 
     @Spy
     @InjectMocks
@@ -64,13 +63,13 @@ class AddImageCoverTest {
         byte [] expectBytes = new byte[1024];
 
         //when
-        doReturn(expectBytes).when(imageBytes).convertURLtoBytes(any(URL.class));
+        doReturn(expectBytes).when(URLBytes).convertURLtoBytes(any(URL.class));
 
         //then
         byte [] resultBytes = addImageCover.download(titleDetailsForm);
         //assert
         assertThat(resultBytes).isEqualTo(expectBytes);
-        verify(imageBytes,times(1)).convertURLtoBytes(any(URL.class));
+        verify(URLBytes,times(1)).convertURLtoBytes(any(URL.class));
 
 
     }
@@ -83,12 +82,12 @@ class AddImageCoverTest {
         titleDetailsForm.setImageCoverUrl(image);
 
         //when
-        doThrow(IOException.class).when(imageBytes).convertURLtoBytes(any(URL.class));
+        doThrow(IOException.class).when(URLBytes).convertURLtoBytes(any(URL.class));
 
 
         //assert
         assertThrows(TitleBadRequestException.class, () ->   addImageCover.download(titleDetailsForm));
-        verify(imageBytes,times(1)).convertURLtoBytes(any(URL.class));
+        verify(URLBytes,times(1)).convertURLtoBytes(any(URL.class));
 
     }
     @Test
@@ -99,13 +98,13 @@ class AddImageCoverTest {
         String imageUrl =  "https://testFakeImageUrl";
         byte [] expectBytes = new byte[1024];
         //when
-        doReturn(expectBytes).when(imageBytes).convertURLtoBytes(any(URL.class));
+        doReturn(expectBytes).when(URLBytes).convertURLtoBytes(any(URL.class));
         //then
         byte [] resultBytes = addImageCover.downloadImageIfExist(imageUrl);
 
         //assert
         assertThat(resultBytes).isEqualTo(expectBytes);
-        verify(imageBytes,times(1)).convertURLtoBytes(any(URL.class));
+        verify(URLBytes,times(1)).convertURLtoBytes(any(URL.class));
 
     }
     @Test
@@ -115,7 +114,7 @@ class AddImageCoverTest {
 
         //assert
         assertThrows(IllegalArgumentException.class, () ->   addImageCover.downloadImageIfExist(imageUrl));
-        verify(imageBytes,never()).convertURLtoBytes(any(URL.class));
+        verify(URLBytes,never()).convertURLtoBytes(any(URL.class));
 
     }
     @Test

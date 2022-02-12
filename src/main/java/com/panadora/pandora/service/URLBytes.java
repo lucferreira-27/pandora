@@ -1,6 +1,5 @@
 package com.panadora.pandora.service;
 
-import com.panadora.pandora.service.exceptions.ImageBytesException;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +10,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @Service
-public class ImageBytes {
+public class URLBytes {
     public byte[] convertURLtoBytes(URL url) throws IOException {
         InputStream inputStream = getInputStreamFromURL(url);
         byte[] imageBytes = IOUtils.toByteArray(inputStream);
@@ -56,4 +56,31 @@ public class ImageBytes {
     }
 
 
+    public byte[] convertURLtoBytes(URL url, Map<String, String> properties) throws IOException {
+        if(isPropertiesValid(properties)) {
+            HttpURLConnection conn = createHttpURLConnection(url, properties);
+            return convertURLtoBytes(conn);
+        }
+        throw new IllegalArgumentException("Properties are not valid");
+    }
+
+    private boolean isPropertiesValid(Map<String, String> properties) {
+
+        if(properties == null || properties.isEmpty()) {
+            return false;
+        }
+        return true;
+
+    }
+
+
+    private byte[] convertURLtoBytes(HttpURLConnection conn) throws IOException {
+        byte[] imageBytes = IOUtils.toByteArray(conn.getInputStream());
+        return imageBytes;
+    }
+
+
 }
+
+
+

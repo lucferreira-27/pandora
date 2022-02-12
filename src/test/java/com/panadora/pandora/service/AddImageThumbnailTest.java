@@ -1,15 +1,8 @@
 package com.panadora.pandora.service;
 
-import com.panadora.pandora.controller.dtos.ChapterDto;
-import com.panadora.pandora.controller.dtos.TitleDto;
-import com.panadora.pandora.controller.dtos.TitleItemsDto;
 import com.panadora.pandora.controller.form.TitleDetailsForm;
-import com.panadora.pandora.model.entities.collection.item.Chapter;
-import com.panadora.pandora.model.entities.collection.title.Title;
 import com.panadora.pandora.model.entities.collection.title.TitleDetails;
-import com.panadora.pandora.repository.title.TitleRepository;
 import com.panadora.pandora.service.exceptions.AddImageException;
-import com.panadora.pandora.service.exceptions.ImageBytesException;
 import com.panadora.pandora.service.exceptions.TitleBadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +18,7 @@ import static org.mockito.Mockito.*;
 
 class AddImageThumbnailTest {
     @Mock
-    private ImageBytes imageBytes;
+    private URLBytes URLBytes;
     @Spy
     @InjectMocks
     private AddImageThumbnail addImageThumbnail;
@@ -68,13 +61,13 @@ class AddImageThumbnailTest {
         byte [] expectBytes = new byte[1024];
 
         //when
-        doReturn(expectBytes).when(imageBytes).convertURLtoBytes(any(URL.class));
+        doReturn(expectBytes).when(URLBytes).convertURLtoBytes(any(URL.class));
 
         //then
         byte [] resultBytes = addImageThumbnail.download(titleDetailsForm);
         //assert
         assertThat(resultBytes).isEqualTo(expectBytes);
-        verify(imageBytes,times(1)).convertURLtoBytes(any(URL.class));
+        verify(URLBytes,times(1)).convertURLtoBytes(any(URL.class));
 
     }
     @Test
@@ -85,12 +78,12 @@ class AddImageThumbnailTest {
         titleDetailsForm.setImageThumbnailUrl(image);
 
         //when
-        doThrow(IOException.class).when(imageBytes).convertURLtoBytes(any(URL.class));
+        doThrow(IOException.class).when(URLBytes).convertURLtoBytes(any(URL.class));
 
 
         //assert
         assertThrows(TitleBadRequestException.class, () ->   addImageThumbnail.download(titleDetailsForm));
-        verify(imageBytes,times(1)).convertURLtoBytes(any(URL.class));
+        verify(URLBytes,times(1)).convertURLtoBytes(any(URL.class));
 
     }
 
@@ -102,13 +95,13 @@ class AddImageThumbnailTest {
         String imageUrl =  "https://testFakeImageUrl";
         byte [] expectBytes = new byte[1024];
         //when
-        doReturn(expectBytes).when(imageBytes).convertURLtoBytes(any(URL.class));
+        doReturn(expectBytes).when(URLBytes).convertURLtoBytes(any(URL.class));
         //then
         byte [] resultBytes = addImageThumbnail.downloadImageIfExist(imageUrl);
 
         //assert
         assertThat(resultBytes).isEqualTo(expectBytes);
-        verify(imageBytes,times(1)).convertURLtoBytes(any(URL.class));
+        verify(URLBytes,times(1)).convertURLtoBytes(any(URL.class));
     }
 
     @Test
@@ -118,7 +111,7 @@ class AddImageThumbnailTest {
 
         //assert
         assertThrows(IllegalArgumentException.class, () ->   addImageThumbnail.downloadImageIfExist(imageUrl));
-        verify(imageBytes,never()).convertURLtoBytes(any(URL.class));
+        verify(URLBytes,never()).convertURLtoBytes(any(URL.class));
     }
 
     @Test

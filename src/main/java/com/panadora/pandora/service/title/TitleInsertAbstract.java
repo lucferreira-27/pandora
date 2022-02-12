@@ -1,12 +1,10 @@
 package com.panadora.pandora.service.title;
 
-import com.panadora.pandora.controller.form.ItemForm;
 import com.panadora.pandora.controller.form.TitleForm;
 import com.panadora.pandora.model.entities.collection.Collection;
 import com.panadora.pandora.model.entities.collection.title.Title;
 import com.panadora.pandora.repository.CollectionRepository;
 import com.panadora.pandora.repository.title.TitleRepository;
-import com.panadora.pandora.service.ImageBytes;
 import com.panadora.pandora.service.exceptions.CollectionNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
